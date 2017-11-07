@@ -16,13 +16,14 @@
 ## and https://gist.github.com/elerch/88ea951c9c4ec4c3c1604b8fc9167e53
 
 # To run this without copy/paste the whole thing:
-# curl > bootstrap.sh && sh bootstrap.sh && rm bootstrap.sh
+# bash < <(curl -s https://raw.githubusercontent.com/DancingQuanta/vcsh-config/bootstrap/bootstrap.sh)
 
 ## ---------------------------------------------------------------------------
 ## Variables
 ## ---------------------------------------------------------------------------
 SELF="$(basename $0)"
-SELF_URL="https://github.com/DancingQuanta/vcsh-config"
+VCSH_ROOT_NAME="vcsh-config"
+VCSH_ROOT="https://github.com/DancingQuanta/$VCSH_ROOT_NAME"
 
 ## ---------------------------------------------------------------------------
 ## Functions
@@ -78,9 +79,9 @@ check_cmd mr
 log "Cloning $VCSH_ROOT"
 cd $HOME
 # Clone the root vcsh repo, containing the mr configuration
-[ ! -d ~/.config/vcsh/repo.d/$VCSH_REPO.git ] && vcsh clone $VCSH_ROOT
+[ ! -d ~/.config/vcsh/repo.d/$VCSH_ROOT_NAME.git ] && vcsh clone $VCSH_ROOT
 
-# Fixup $VCSH_REPO's working tree for the sparse checkout settings
-log "Setting up $VCSH_REPO"
-vcsh $VCSH_REPO read-tree -mu HEAD
+# Fixup $VCSH_ROOT_NAME's working tree for the sparse checkout settings
+log "Setting up $VCSH_ROOT_NAME"
+vcsh $VCSH_ROOT_NAME read-tree -mu HEAD
 mr update
