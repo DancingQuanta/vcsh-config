@@ -1,0 +1,14 @@
+## DancingQuanta/vcsh-config - https://github.com/DancingQuanta/vcsh-config
+## .mrconfig
+
+[DEFAULT]
+git_gc = git gc "$@"
+jobs = 5
+skip = [ "$1" = update ] && ! hours_since "$1" 12
+
+# include config.d files that repositories can add
+include = cat ~/.config/mr/config.d/*
+
+# git
+
+s = git status -s

@@ -1,0 +1,110 @@
+#!/bin/bash
+# Adapted from https://github.com/srijanshetty/cli-goodies/blob/master/functions/repos
+
+CURRENT_DIR=${PWD}
+AVAILABLE_DIR="$HOME/.config/mr/available.d"
+CONFIG_DIR="$HOME/.config/mr/config.d"
+
+_repos_help() {
+cat << _EOH_
+
+USAGE: repos <command> [arguments]
+
+COMMAND:
+
+--available       list available configurations
+--check           list all repos not in mrconfig
+--disable         diable a configuration
+--enable          enable a configuration
+--list            list current configurations
+--only            only enable one configuration
+--reg             register the current folder to mr
+
+_EOH_
+  }
+
+
+_file_check() {
+  [[ -e $AVAILABLE_DIR/"$1" ]] 
+}
+
+_repos_list() {
+  ls $CONFIG_DIR
+}
+
+_repos_available() {
+  ls $AVAILABLE_DIR
+}
+
+_repos_enable() {
+  # Link available.d file to config.d
+  _file_check "$1" && ln -s $AVAILABLE_DIR/"$1" $CONFIG_DIR/"$1" \
+    && echo "Linking $AVAILABLE_DIR/$1 to $CONFIG_DIR/$1"
+}
+
+_repos_disable() {
+  # Get the name of the repo and remove config.d file
+  _file_check "$1" && rm -f $CONFIG_DIR/"$1" && echo "Disabled $CONFIG_DIR/$1"
+}
+
+_repos_only() {
+  _file_check "$1" && /bin/rm -f $CONFIG_DIR/* && _repos_enable "$1"
+}
+
+_repos_check() {
+  for file in ./*; do
+      < .mrconfig grep "$file" &>/dev/null || echo "$file";
+  done
+}
+
+_repos_reg() {
+  # Right now, we only support git directories
+  if git rev-parse --is-inside-work-tree &> /dev/null; then
+    REMOTE=$(git config --get remote.origin.url)
+    LOCAL=$(git rev-parse --show-toplevel)
+    if [[ -z "$REMOTE" ]]; then
+      echo "This repo does not have a remote called origin, please add origin as a remote"
+      exit 1
+    fi
+  else
+    exit 1
+  fi
+
+  # Get the name of root directory of repo
+  DIRECTORY_NAME=$(basename $LOCAL)
+
+  # Create a .mrconfig-like file for this repo in available.d with following statements
+  CONFIG=$AVAILABLE_DIR/"$(basename "$REMOTE")"
+  echo ""
+  echo "[${LOCAL/#$HOME/'$HOME'}]" > $CONFIG
+  echo "checkout = git clone '$REMOTE' '$DIRECTORY_NAME'" >> $CONFIG
+  echo "adding $DIRECTORY_NAME to $CONFIG"
+  _repos_enable "$(basename "$REMOTE")" 
+}
+
+_repos_edit() {
+  _file_check "$1" && "${EDITOR}" $AVAILABLE_DIR/"$1"
+}
+
+if [[ "$2" == "" ]]; then
+  if git rev-parse --is-inside-work-tree &> /dev/null; then
+    LOCAL="$(basename "$(git rev-parse --show-toplevel)")".git
+  fi
+else
+  LOCAL="$(basename "$2")".git
+fi
+echo $LOCAL
+case "$1" in
+  ls | list)          _repos_list;;
+  en | enable)        _repos_enable "$LOCAL";;
+  d | disable)        _repos_disable "$LOCAL";;
+  r | reg)            _repos_reg;;
+  ed | edit)          _repos_edit "$LOCAL";;
+  a | available)      _repos_available;;
+  c | check)          _repos_check;;
+  o | only)           _repos_only "$LOCAL";;
+  *)                  _repos_help;;
+esac
+
+# Jump back to the directory from where we started
+cd "$CURRENT_DIR"

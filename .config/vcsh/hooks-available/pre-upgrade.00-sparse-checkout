@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+## DancingQuanta/vcsh-config - https://github.com/DancingQuanta/vcsh-config
+## pre-upgrade.00-sparse-checkout
+## From https://github.com/jwhitley/vcsh-root
+## Sparse checkout following files upon pre-upgrade of a vcsh repo
+
+git config core.sparseCheckout true
+if [ ! -f $GIT_DIR/info/sparse-checkout ]; then
+  cat >> $GIT_DIR/info/sparse-checkout << EOF
+*
+!.gitignore
+!.travis.yml
+!LICENSE*
+!README*
+!docs
+!Dockerfile
+!Dockerfile*
+!Vagrantfile
+!circle.yml
+EOF
+fi
