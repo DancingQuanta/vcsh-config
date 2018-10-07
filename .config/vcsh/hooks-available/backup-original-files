@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 ## DancingQuanta/vcsh-config - https://github.com/DancingQuanta/vcsh-config
-## pre-merge.00-backup-original-files
+## backup-original-files
+##
+## Backup original files to avoid merge conflicts.
+## Symlink to pre-merge.00-backup-original-files
 ## From https://github.com/ek9/dotfiles
 
 # This code does almost exactly what the native vcsh sanity checking code
