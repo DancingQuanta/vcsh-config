@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 ## DancingQuanta/vcsh-config - https://github.com/DancingQuanta/vcsh-config
-## pre-upgrade.00-sparse-checkout
+## pull-rebase.sh
 ## From https://github.com/jwhitley/vcsh-root
 ## Set pull rebase to true
 
