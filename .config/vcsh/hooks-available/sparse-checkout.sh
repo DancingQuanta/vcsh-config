@@ -1,9 +1,9 @@
-#!/usr/bin/env sh
-## DancingQuanta/vcsh-config - https://github.com/DancingQuanta/vcsh-config
-## sparse-checkout.sh
-## From https://git.ao2.it/config/vcsh.git/
-## Sparse checkout files listed in "$GIT_DIR/info/sparse-checkout" upon
-## pre-upgrade of a vcsh repo
+#!/bin/sh
+
+set -e
+
+# If the vcsh repository does not exist, exit without doing anything.
+[ -d "$GIT_DIR" ] || exit 0
 
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
 
