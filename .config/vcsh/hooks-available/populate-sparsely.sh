@@ -17,15 +17,10 @@ LOCKPID=$(cat "$LOCKDIR/pid")
 : "${XDG_CONFIG_HOME:="$HOME/.config"}"
 
 # shellcheck source=/dev/null
-. "$XDG_CONFIG_HOME/vcsh/hooks-available/sparse-checkout.sh"
+. "$XDG_CONFIG_HOME/vcsh/hooks-available/enable-sparse-checkout.sh"
 
-# Verify if the current branch is valid before updating the working tree.
-# This avoids errors with empty repositories which would only confuse the
-# user.
-if git rev-parse --verify HEAD >/dev/null 2>&1;
-then
-  git read-tree -mu HEAD
-fi
+# shellcheck source=/dev/null
+. "$XDG_CONFIG_HOME/vcsh/hooks-available/update-working-tree.sh"
 
 # Unlock the working tree.
 rm -rf "$LOCKDIR"

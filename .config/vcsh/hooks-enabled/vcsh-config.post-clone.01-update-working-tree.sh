@@ -1,0 +1,1 @@
+../hooks-available/update-working-tree.sh
