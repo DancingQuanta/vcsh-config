@@ -1,0 +1,10 @@
+#!/bin/sh
+ 
+set -e
+
+if [[ "$OSTYPE" == "cygwin" ]] | [[ "$OSTYPE" == "msys" ]]; then
+  echo "Converting symlinks on windows"
+  git config core.symlinks true
+  git reset --hard
+  git commit -am "Symlink"
+fi
